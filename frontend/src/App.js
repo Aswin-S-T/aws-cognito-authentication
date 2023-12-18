@@ -32,73 +32,76 @@ function App() {
   };
 
   return (
-    <Authenticator
-      initialState="signIn"
-      components={{
-        SignUp: {
-          FormFields() {
-            return (
-              <>
-                <Authenticator.SignUp.FormFields />
+    <div className="screen mt-5">
+      <Authenticator
+        initialState="signIn"
+        components={{
+          SignUp: {
+            FormFields() {
+              return (
+                <div className="form">
+                  <Authenticator.SignUp.FormFields />
 
-                <div>
-                  <label>First name</label>
+                  <div>
+                    <label>First name</label>
+                  </div>
+                  <input
+                    type="text"
+                    name="given_name"
+                    placeholder="Please enter your first name"
+                    className="w-100 p-2"
+                  />
+                  <div>
+                    <label>Last name</label>
+                  </div>
+                  <input
+                    type="text"
+                    name="family_name"
+                    className="w-100 p-2"
+                    placeholder="Please enter your last name"
+                  />
+                  <div>
+                    <label>Email</label>
+                  </div>
+                  <input
+                    type="text"
+                    name="email"
+                    className="w-100 p-2"
+                    placeholder="Please enter a valid email"
+                  />
                 </div>
-                <input
-                  type="text"
-                  name="given_name"
-                  placeholder="Please enter your first name"
-                />
-                <div>
-                  <label>Last name</label>
-                </div>
-                <input
-                  type="text"
-                  name="family_name"
-                  placeholder="Please enter your last name"
-                />
-                <div>
-                  <label>Email</label>
-                </div>
-                <input
-                  type="text"
-                  name="email"
-                  placeholder="Please enter a valid email"
-                />
-              </>
-            );
+              );
+            },
           },
-        },
-      }}
-      services={{
-        async validateCustomSignUp(formData) {
-          if (!formData.given_name) {
-            return {
-              given_name: "First Name is required",
-            };
-          }
-          if (!formData.family_name) {
-            return {
-              family_name: "Last Name is required",
-            };
-          }
-          if (!formData.email) {
-            return {
-              email: "Email is required",
-            };
-          }
-        },
-      }}
-    >
-      {({ signOut, user }) => (
-        <div>
-          Welcome {user.username}
-          <button onClick={signOut}>Sign out</button>
-          <h4>Your JWT token:</h4>
-          {jwtToken}
-        </div>
-      )}
-    </Authenticator>
+        }}
+        services={{
+          async validateCustomSignUp(formData) {
+            if (!formData.given_name) {
+              return {
+                given_name: "First Name is required",
+              };
+            }
+            if (!formData.family_name) {
+              return {
+                family_name: "Last Name is required",
+              };
+            }
+            if (!formData.email) {
+              return {
+                email: "Email is required",
+              };
+            }
+          },
+        }}
+      >
+        {({ signOut, user }) => (
+          <div className="dashboard">
+            <h2>Welcome {user?.attributes?.given_name}</h2>
+            <button onClick={signOut} className="m-2">Sign out</button>
+          </div>
+        )}
+      </Authenticator>
+    </div>
   );
 }
 
