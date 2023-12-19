@@ -69,11 +69,64 @@ function App() {
                     className="w-100 p-2"
                     placeholder="Please enter a valid email"
                   />
+                  <div>
+                    <label>Phone Number</label>
+                  </div>
+                  <input
+                    type="text"
+                    name="phone_number"
+                    className="w-100 p-2"
+                    placeholder="Please enter your phone number"
+                    // defaultValue="+91"
+                  />
                 </div>
               );
             },
           },
         }}
+        // services={{
+        //   async validateCustomSignUp(formData) {
+        //     if (!formData.given_name) {
+        //       return {
+        //         given_name: "First Name is required",
+        //       };
+        //     }
+        //     if (!formData.family_name) {
+        //       return {
+        //         family_name: "Last Name is required",
+        //       };
+        //     }
+        //     if (!formData.email) {
+        //       return {
+        //         email: "Email is required",
+        //       };
+        //     }
+        //     // if (!formData.phone_number) {
+        //     //   return {
+        //     //     phone_number: "Phone Number is required",
+        //     //   };
+        //     // }
+
+        //     const userPhoneNumber = formData.phone_number;
+
+        //     // Ensure the phone number is not empty
+        //     if (!userPhoneNumber) {
+        //       return {
+        //         phone_number: "Phone Number is required",
+        //       };
+        //     }
+
+        //     // Concatenate the country code with the user-entered phone number
+        //     const fullPhoneNumber = `+91${userPhoneNumber.replace(/^\+1/, "")}`;
+
+        //     console.log(
+        //       "CEHECK USER ATTIRBUTES-----------",
+        //       formData?.UserAttributes
+        //     );
+
+        //     console.log("Modified formData:", formData);
+        //   },
+        // }}
         services={{
           async validateCustomSignUp(formData) {
             if (!formData.given_name) {
@@ -91,13 +144,47 @@ function App() {
                 email: "Email is required",
               };
             }
+
+            const userPhoneNumber = formData.phone_number;
+
+            // Ensure the phone number is not empty
+            if (!userPhoneNumber) {
+              return {
+                phone_number: "Phone Number is required",
+              };
+            }
+
+            // Concatenate the country code with the user-entered phone number
+            const fullPhoneNumber = `+91${userPhoneNumber.replace(/^\+1/, "")}`;
+
+            try {
+              // Use Auth.signUp with UserAttributes directly
+              const signUpResponse = await Auth.signUp({
+                username: formData.email,
+                password: formData.password, // Ensure you have the password field in your form
+                attributes: {
+                  given_name: formData.given_name,
+                  family_name: formData.family_name,
+                  email: formData.email,
+                  phone_number: fullPhoneNumber,
+                },
+              });
+
+              console.log("Sign-up response:", signUpResponse);
+            } catch (error) {
+              console.error("Error during sign-up:", error);
+              // Handle the error or return an appropriate error message
+              return { error: "Error during sign-up" };
+            }
           },
         }}
       >
         {({ signOut, user }) => (
           <div className="dashboard">
             <h2>Welcome {user?.attributes?.given_name}</h2>
-            <button onClick={signOut} className="m-2">Sign out</button>
+            <button onClick={signOut} className="m-2">
+              Sign out
+            </button>
           </div>
         )}
       </Authenticator>
